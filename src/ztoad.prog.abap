@@ -272,59 +272,59 @@ DATA : o_handle_event         TYPE REF TO lcl_application,
 
 * Tabs objects (editor, ddic, alv)
        BEGIN OF s_tab_active,
-         o_textedit             TYPE REF TO cl_gui_abapedit,
-         o_tree_ddic            TYPE REF TO cl_gui_column_tree,
-         t_node_ddic            TYPE treev_ntab,
-         t_item_ddic            TYPE TABLE OF mtreeitm,
-         o_alv_result           TYPE REF TO cl_gui_alv_grid,
-         row_height             TYPE i,
+         o_textedit   TYPE REF TO cl_gui_abapedit,
+         o_tree_ddic  TYPE REF TO cl_gui_column_tree,
+         t_node_ddic  TYPE treev_ntab,
+         t_item_ddic  TYPE TABLE OF mtreeitm,
+         o_alv_result TYPE REF TO cl_gui_alv_grid,
+         row_height   TYPE i,
        END OF s_tab_active,
-       t_tabs LIKE TABLE OF s_tab_active,
+       t_tabs            LIKE TABLE OF s_tab_active,
 
 * Repository data
-       o_tree_repository      TYPE REF TO cl_gui_simple_tree,
+       o_tree_repository TYPE REF TO cl_gui_simple_tree,
        BEGIN OF s_node_repository.
-        INCLUDE TYPE treev_node. "mtreesnode.
-DATA :  text(100) TYPE c,
-        edit(1)   TYPE c,
-        queryid   TYPE ztoad-queryid,
-        END OF s_node_repository,
-        t_node_repository      LIKE TABLE OF s_node_repository,
+         INCLUDE TYPE treev_node. "mtreesnode.
+DATA : text(100) TYPE c,
+         edit(1)   TYPE c,
+         queryid   TYPE ztoad-queryid,
+       END OF s_node_repository,
+       t_node_repository      LIKE TABLE OF s_node_repository,
 
 * DDIC data
-        w_dragdrop_handle_tree TYPE i,
+       w_dragdrop_handle_tree TYPE i,
 * DDIC toolbar
-        o_toolbar              TYPE REF TO cl_gui_toolbar,
+       o_toolbar              TYPE REF TO cl_gui_toolbar,
 * Option panel
-        o_options              TYPE REF TO cl_wdy_wb_property_box,
+       o_options              TYPE REF TO cl_wdy_wb_property_box,
 * ZSPRO data
-        t_node_zspro           LIKE s_tab_active-t_node_ddic,
-        t_item_zspro           LIKE s_tab_active-t_item_ddic,
+       t_node_zspro           LIKE s_tab_active-t_node_ddic,
+       t_item_zspro           LIKE s_tab_active-t_item_ddic,
 
 * Save option
-        BEGIN OF s_options,
-          name          TYPE ztoad-text,
-          visibility    TYPE ztoad-visibility,
-          visibilitygrp TYPE usr02-class,
-        END OF s_options,
+       BEGIN OF s_options,
+         name          TYPE ztoad-text,
+         visibility    TYPE ztoad-visibility,
+         visibilitygrp TYPE usr02-class,
+       END OF s_options,
 
 * Keep last loaded id
-        w_last_loaded_query TYPE ztoad-queryid,
+       w_last_loaded_query TYPE ztoad-queryid,
 
 * Count number of runs
-        w_run               TYPE i.
+       w_run               TYPE i.
 
 DATA : w_okcode LIKE sy-ucomm,
        BEGIN OF s_tab,
-         title1 TYPE string VALUE 'Tab 1',                  "#EC NOTEXT
-         title2 TYPE string VALUE 'Tab 2',                  "#EC NOTEXT
-         title3 TYPE string VALUE 'Tab 3',                  "#EC NOTEXT
-         title4 TYPE string VALUE 'Tab 4',                  "#EC NOTEXT
-         title5 TYPE string VALUE 'Tab 5',                  "#EC NOTEXT
-         title6 TYPE string VALUE 'Tab 6',                  "#EC NOTEXT
-         title7 TYPE string VALUE 'Tab 7',                  "#EC NOTEXT
-         title8 TYPE string VALUE 'Tab 8',                  "#EC NOTEXT
-         title9 TYPE string VALUE 'Tab 9',                  "#EC NOTEXT
+         title1  TYPE string VALUE 'Tab 1',                 "#EC NOTEXT
+         title2  TYPE string VALUE 'Tab 2',                 "#EC NOTEXT
+         title3  TYPE string VALUE 'Tab 3',                 "#EC NOTEXT
+         title4  TYPE string VALUE 'Tab 4',                 "#EC NOTEXT
+         title5  TYPE string VALUE 'Tab 5',                 "#EC NOTEXT
+         title6  TYPE string VALUE 'Tab 6',                 "#EC NOTEXT
+         title7  TYPE string VALUE 'Tab 7',                 "#EC NOTEXT
+         title8  TYPE string VALUE 'Tab 8',                 "#EC NOTEXT
+         title9  TYPE string VALUE 'Tab 9',                 "#EC NOTEXT
          title10 TYPE string VALUE 'Tab 10',                "#EC NOTEXT
          title11 TYPE string VALUE 'Tab 11',                "#EC NOTEXT
          title12 TYPE string VALUE 'Tab 12',                "#EC NOTEXT
@@ -378,10 +378,10 @@ CONSTANTS : c_ddic_col1            TYPE mtreeitm-item_name
             c_native_command       TYPE string VALUE 'NATIVE',
             c_query_max_exec       TYPE i VALUE 1000,
 
-            c_xmlnode_root TYPE string VALUE 'root',        "#EC NOTEXT
-            c_xmlnode_file TYPE string VALUE 'query',       "#EC NOTEXT
-            c_xmlattr_visibility TYPE string VALUE 'visibility', "#EC NOTEXT
-            c_xmlattr_text TYPE string VALUE 'description'. "#EC NOTEXT
+            c_xmlnode_root         TYPE string VALUE 'root', "#EC NOTEXT
+            c_xmlnode_file         TYPE string VALUE 'query', "#EC NOTEXT
+            c_xmlattr_visibility   TYPE string VALUE 'visibility', "#EC NOTEXT
+            c_xmlattr_text         TYPE string VALUE 'description'. "#EC NOTEXT
 
 *######################################################################*
 *
@@ -409,44 +409,44 @@ CLASS lcl_application DEFINITION FINAL.
     METHODS :
 * Handle F1 call on ABAP editor
       hnd_editor_f1
-         FOR EVENT f1 OF cl_gui_abapedit,
+        FOR EVENT f1 OF cl_gui_abapedit,
 * Handle Node double clic on ddic tree
       hnd_ddic_item_dblclick
-                    FOR EVENT item_double_click OF cl_gui_column_tree
+        FOR EVENT item_double_click OF cl_gui_column_tree
         IMPORTING node_key,
 * Handle context menu display on repository tree
       hnd_repo_context_menu
-      FOR EVENT node_context_menu_request
-                    OF cl_gui_simple_tree
+        FOR EVENT node_context_menu_request
+        OF cl_gui_simple_tree
         IMPORTING menu,
 * Handle context menu clic on repository tree
       hnd_repo_context_menu_sel
-      FOR EVENT node_context_menu_select
-                    OF cl_gui_simple_tree
+        FOR EVENT node_context_menu_select
+        OF cl_gui_simple_tree
         IMPORTING fcode,
 * Handle Node double clic on repository tree
       hnd_repo_dblclick
-                    FOR EVENT node_double_click OF cl_gui_simple_tree
+        FOR EVENT node_double_click OF cl_gui_simple_tree
         IMPORTING node_key,
 * Handle toolbar display on ALV result
       hnd_result_toolbar
-                    FOR EVENT toolbar OF cl_gui_alv_grid
+        FOR EVENT toolbar OF cl_gui_alv_grid
         IMPORTING e_object,
 * Handle toolbar clic on ALV result
       hnd_result_user_command
-                    FOR EVENT user_command OF cl_gui_alv_grid
+        FOR EVENT user_command OF cl_gui_alv_grid
         IMPORTING e_ucomm,
 * Handle DDIC tree drag
       hnd_ddic_drag
-                    FOR EVENT on_drag OF cl_gui_column_tree
+        FOR EVENT on_drag OF cl_gui_column_tree
         IMPORTING node_key drag_drop_object,
 * Handle editor drop
       hnd_editor_drop
-                    FOR EVENT on_drop OF cl_gui_abapedit
+        FOR EVENT on_drop OF cl_gui_abapedit
         IMPORTING line pos dragdrop_object,
 * Handle ddic toolbar clic
       hnd_ddic_toolbar_clic
-                    FOR EVENT function_selected OF cl_gui_toolbar
+        FOR EVENT function_selected OF cl_gui_toolbar
         IMPORTING fcode.
 ENDCLASS.                    "lcl_application DEFINITION
 
@@ -808,7 +808,7 @@ MODULE status_0010 OUTPUT.
     APPEND s_tab_active TO t_tabs.
   ENDIF.
 
-  perform set_status_010.
+  PERFORM set_status_010.
 
 ENDMODULE.                 " STATUS_0010  OUTPUT
 
@@ -1890,8 +1890,8 @@ FORM query_generate  USING    fw_select TYPE string
 
   DEFINE c.
     lw_strlen_string = &1.
-    perform add_line_to_table using lw_strlen_string
-                              changing lt_code_string.
+    PERFORM add_line_to_table USING lw_strlen_string
+                              CHANGING lt_code_string.
   END-OF-DEFINITION.
 
   CLEAR : lw_select_distinct,
@@ -2113,7 +2113,7 @@ FORM query_generate  USING    fw_select TYPE string
     ENDIF.
     IF lw_char_10 = 'SUM(' OR lw_char_10 = 'MAX('
     OR lw_char_10 = 'MIN('.
-      clear lw_string2.
+      CLEAR lw_string2.
       lw_index = lw_current_line + 1.
       DO.
         SEARCH lw_string FOR ')'.
@@ -2258,18 +2258,18 @@ FORM query_generate  USING    fw_select TYPE string
                   INTO lw_select SEPARATED BY space.
     ENDIF.
     c lw_select.
-    IF fw_newsyntax = abap_true.
-      c 'INTO TABLE @t_result'.                             "#EC NOTEXT
-    ELSE.
-      c 'INTO TABLE t_result'.                              "#EC NOTEXT
-    ENDIF.
-
-* Add UP TO xxx ROWS
-    IF NOT fw_rows IS INITIAL.
-      c 'UP TO'.                                            "#EC NOTEXT
-      c fw_rows.
-      c 'ROWS'.                                             "#EC NOTEXT
-    ENDIF.
+**    IF fw_newsyntax = abap_true.
+**      c 'INTO TABLE @t_result'.                             "#EC NOTEXT
+**    ELSE.
+**      c 'INTO TABLE t_result'.                              "#EC NOTEXT
+**    ENDIF.
+**
+*** Add UP TO xxx ROWS
+**    IF NOT fw_rows IS INITIAL.
+**      c 'UP TO'.                                            "#EC NOTEXT
+**      c fw_rows.
+**      c 'ROWS'.                                             "#EC NOTEXT
+**    ENDIF.
   ENDIF.
 
   c 'FROM'.                                                 "#EC NOTEXT
@@ -2279,6 +2279,21 @@ FORM query_generate  USING    fw_select TYPE string
   IF NOT fw_where IS INITIAL.
     c fw_where.
   ENDIF.
+*& kkw
+  IF fw_newsyntax = abap_true.
+    c 'INTO TABLE @t_result'.                               "#EC NOTEXT
+  ELSE.
+    c 'INTO TABLE t_result'.                                "#EC NOTEXT
+  ENDIF.
+
+* Add UP TO xxx ROWS
+  IF NOT fw_rows IS INITIAL.
+    c 'UP TO'.                                              "#EC NOTEXT
+    c fw_rows.
+    c 'ROWS'.                                               "#EC NOTEXT
+  ENDIF.
+*& End  22.12.2023 09:15:54
+
   c '.'.
 
 * Display query execution time
@@ -3459,8 +3474,8 @@ FORM query_generate_noselect  USING    fw_command TYPE string
 
   DEFINE c.
     lw_strlen_string = &1.
-    perform add_line_to_table using lw_strlen_string
-                              changing lt_code_string.
+    PERFORM add_line_to_table USING lw_strlen_string
+                              CHANGING lt_code_string.
   END-OF-DEFINITION.
 
 * Write Header
@@ -3862,7 +3877,7 @@ FORM ddic_add_tree_zspro.
          lw_node_number(11) TYPE n,
          lw_found(1)        TYPE c.
   CONSTANTS lc_zspro(30) TYPE c VALUE 'ZSPRO'.
-  FIELD-SYMBOLS : <ft_zspro> TYPE standard table,
+  FIELD-SYMBOLS : <ft_zspro> TYPE STANDARD TABLE,
                   <fs_zspro> TYPE any,
                   <fw_zspro> TYPE any.
   REFRESH : t_node_zspro, t_item_zspro.
@@ -4499,7 +4514,7 @@ FORM ddic_f4.
          lw_line_end   TYPE i,
          lw_pos_end    TYPE i,
          lw_val        TYPE string,
-         lw_dummy      type c.                              "#EC NEEDED
+         lw_dummy      TYPE c.                              "#EC NEEDED
 
 * Get selection in ddic tree
   CALL METHOD s_tab_active-o_tree_ddic->get_selected_node "line selected
@@ -4615,7 +4630,7 @@ ENDFORM.                    " EDITOR_GET_DEFAULT_QUERY
 *----------------------------------------------------------------------*
 FORM tab_new.
   DATA : l_numb TYPE i,
-         l_tab TYPE string.
+         l_tab  TYPE string.
 
   DESCRIBE TABLE t_tabs LINES l_numb.
   IF l_numb GE 30.
@@ -4695,9 +4710,9 @@ ENDFORM.                    " LEAVE_CURRENT_TAB
 *----------------------------------------------------------------------*
 FORM tab_update_title USING fw_query TYPE string.
   DATA : lw_name(30) TYPE c,
-         lt_query TYPE soli_tab,
-         ls_query LIKE LINE OF lt_query,
-         lw_query TYPE string.
+         lt_query    TYPE soli_tab,
+         ls_query    LIKE LINE OF lt_query,
+         lw_query    TYPE string.
   FIELD-SYMBOLS <fs> TYPE any.
   IF w_tabstrip-activetab IS INITIAL.
     lw_name = 'S_TAB-TITLE1'.
@@ -4746,27 +4761,27 @@ FORM export_xml.
   DATA : BEGIN OF ls_xml,
            line(256) TYPE x,
          END OF ls_xml,
-         lt_xml LIKE TABLE OF ls_xml,
+         lt_xml      LIKE TABLE OF ls_xml,
 
          lw_filename TYPE string,
-         lw_path TYPE string,
+         lw_path     TYPE string,
          lw_fullpath TYPE string.
-  DATA : lo_xml TYPE REF TO if_ixml,
-         lo_document TYPE REF TO if_ixml_document,
-         lo_root TYPE REF TO if_ixml_element,
-         lo_element TYPE REF TO if_ixml_element,
-         lw_string TYPE string,
+  DATA : lo_xml           TYPE REF TO if_ixml,
+         lo_document      TYPE REF TO if_ixml_document,
+         lo_root          TYPE REF TO if_ixml_element,
+         lo_element       TYPE REF TO if_ixml_element,
+         lw_string        TYPE string,
          lo_streamfactory TYPE REF TO if_ixml_stream_factory,
-         lo_ostream TYPE REF TO if_ixml_ostream,
-         lo_renderer TYPE REF TO if_ixml_renderer,
-         lw_title TYPE string,
-         lw_filter TYPE string,
-         lw_name TYPE string,
+         lo_ostream       TYPE REF TO if_ixml_ostream,
+         lo_renderer      TYPE REF TO if_ixml_renderer,
+         lw_title         TYPE string,
+         lw_filter        TYPE string,
+         lw_name          TYPE string,
          BEGIN OF ls_ztoad,
-           queryid TYPE ztoad-queryid,
+           queryid    TYPE ztoad-queryid,
            visibility TYPE ztoad-visibility_group,
-           text TYPE ztoad-text,
-           query TYPE ztoad-query,
+           text       TYPE ztoad-text,
+           query      TYPE ztoad-query,
          END OF ls_ztoad,
          lt_ztoad LIKE TABLE OF ls_ztoad.
 
@@ -4840,27 +4855,27 @@ ENDFORM.                    "Export_xml
 *       Import Saved Queries from xml format
 *----------------------------------------------------------------------*
 FORM import_xml.
-  DATA : lt_filetab TYPE filetable,
-         ls_file    TYPE file_table,
-         lw_filename TYPE string,
-         lw_subrc    LIKE sy-subrc,
-         lw_xmldata   TYPE xstring,
-         lo_xml TYPE REF TO if_ixml,
-         lo_document TYPE REF TO if_ixml_document,
+  DATA : lt_filetab       TYPE filetable,
+         ls_file          TYPE file_table,
+         lw_filename      TYPE string,
+         lw_subrc         LIKE sy-subrc,
+         lw_xmldata       TYPE xstring,
+         lo_xml           TYPE REF TO if_ixml,
+         lo_document      TYPE REF TO if_ixml_document,
          lo_streamfactory TYPE REF TO if_ixml_stream_factory,
-         lo_stream TYPE REF TO if_ixml_istream,
-         lo_parser TYPE REF TO if_ixml_parser.
-  DATA : lo_iterator TYPE REF TO if_ixml_node_iterator,
-         lo_node  TYPE REF TO if_ixml_node,
+         lo_stream        TYPE REF TO if_ixml_istream,
+         lo_parser        TYPE REF TO if_ixml_parser.
+  DATA : lo_iterator  TYPE REF TO if_ixml_node_iterator,
+         lo_node      TYPE REF TO if_ixml_node,
          lw_node_name TYPE string,
-         lo_element TYPE REF TO if_ixml_element,
-         lw_title TYPE string,
-         lw_filter TYPE string,
-         lw_guid TYPE guid_32,
-         lw_group TYPE usr02-class,
-         lw_string TYPE string,
-         ls_ztoad TYPE ztoad,
-         lt_ztoad LIKE TABLE OF ls_ztoad.
+         lo_element   TYPE REF TO if_ixml_element,
+         lw_title     TYPE string,
+         lw_filter    TYPE string,
+         lw_guid      TYPE guid_32,
+         lw_group     TYPE usr02-class,
+         lw_string    TYPE string,
+         ls_ztoad     TYPE ztoad,
+         lt_ztoad     LIKE TABLE OF ls_ztoad.
 
 * Choose file to import
   lw_title = 'Choose file to import'(m59).
@@ -4992,9 +5007,9 @@ ENDFORM.                    "import_xml
 *       Set PF-STATUS for main scren
 *       Adjust list of visible tabs
 *----------------------------------------------------------------------*
-FORM SET_STATUS_010 .
+FORM set_status_010 .
   DATA : lw_numb TYPE i,
-         lw_max TYPE i.
+         lw_max  TYPE i.
 
   AUTHORITY-CHECK OBJECT 'S_DEVELOP' ID 'ACTVT' FIELD '03'
                                      ID 'DEVCLASS' DUMMY
